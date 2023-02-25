@@ -1,7 +1,7 @@
 // https://nextjs.org/docs/basic-features/layouts
 
 import { Box, Grid } from "@chakra-ui/react";
-import { Activity, BarChart2, Layout, MessageSquare, Settings, Users } from "lucide-react";
+import { Activity, BarChart2, ExternalLink, Layout, MessageSquare, Settings, TrendingUp, Users } from "lucide-react";
 import type { NextPage } from "next";
 import { Header } from "src/components/Header";
 
@@ -31,56 +31,70 @@ export const getTransparentHeaderLayout = (page: React.ReactElement) => (
 );
 
 export const getDashboardLayout = (page: React.ReactElement) => (
-  <Grid templateRows="min-content 1fr" h="full">
+  <Grid templateRows="min-content 1fr" h="full" gridTemplateColumns="minmax(0, 1fr)">
     <Header />
     <ToSWrapper>
       <SideMenuLayout
         menuButtonOptions={[
           {
-            label: "Dashboard",
+            labelID: "dashboard",
             pathname: "/dashboard",
             icon: Layout,
           },
           {
-            label: "Messages",
+            labelID: "messages",
             pathname: "/messages",
             icon: MessageSquare,
           },
           {
-            label: "Leaderboard",
+            labelID: "leaderboard",
             pathname: "/leaderboard",
             icon: BarChart2,
           },
+          {
+            labelID: "stats",
+            pathname: "/stats",
+            icon: TrendingUp,
+          },
+          {
+            labelID: "guidelines",
+            pathname: "https://projects.laion.ai/Open-Assistant/docs/guides/guidelines",
+            icon: ExternalLink,
+            target: "_blank",
+          },
         ]}
       >
-        <Grid templateRows="1fr min-content" h="full">
-          <Box>{page}</Box>
-          <Box mt="10">
-            <SlimFooter />
-          </Box>
-        </Grid>
+        <Box>{page}</Box>
+        <Box mt="10">
+          <SlimFooter />
+        </Box>
       </SideMenuLayout>
     </ToSWrapper>
   </Grid>
 );
 
 export const getAdminLayout = (page: React.ReactElement) => (
-  <div className="grid grid-rows-[min-content_1fr_min-content] h-full justify-items-stretch">
+  <Grid templateRows="min-content 1fr" h="full" gridTemplateColumns="minmax(0, 1fr)">
     <Header />
     <SideMenuLayout
       menuButtonOptions={[
         {
-          label: "Users",
+          labelID: "users",
           pathname: "/admin",
           icon: Users,
         },
         {
-          label: "Status",
+          labelID: "trollboard",
+          pathname: "/admin/trollboard",
+          icon: BarChart2,
+        },
+        {
+          labelID: "status",
           pathname: "/admin/status",
           icon: Activity,
         },
         {
-          label: "Parameters",
+          labelID: "parameters",
           pathname: "/admin/parameters",
           icon: Settings,
         },
@@ -88,7 +102,7 @@ export const getAdminLayout = (page: React.ReactElement) => (
     >
       {page}
     </SideMenuLayout>
-  </div>
+  </Grid>
 );
 
 export const noLayout = (page: React.ReactElement) => page;

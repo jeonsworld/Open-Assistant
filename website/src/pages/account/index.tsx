@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import React from "react";
 export { getDefaultStaticProps as getStaticProps } from "src/lib/default_static_props";
 import { Pencil } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { SurveyCard } from "src/components/Survey/SurveyCard";
 import { get } from "src/lib/api";
 import { getTypeSafei18nKey } from "src/lib/i18n";
@@ -15,12 +15,16 @@ import uswSWRImmutable from "swr/immutable";
 export default function Account() {
   const { t } = useTranslation("leaderboard");
   const { data: session } = useSession();
-  const { data } = uswSWRImmutable<{ [time in LeaderboardTimeFrame]: LeaderboardEntity }>("/api/user_stats", get);
+  const { data: entries } = uswSWRImmutable<Partial<{ [time in LeaderboardTimeFrame]: LeaderboardEntity }>>(
+    "/api/user_stats",
+    get,
+    {
+      fallbackData: {},
+    }
+  );
   if (!session) {
     return;
   }
-
-  console.log(data);
 
   return (
     <>
@@ -37,30 +41,28 @@ export default function Account() {
             <Title>{t("your_account")}</Title>
             <Divider />
             <Grid gridTemplateColumns="repeat(2, max-content)" alignItems="center" gap={6} py={4}>
-              <Text as="b">Username</Text>
+              <Text as="b">{t("username")}</Text>
               <Flex gap={2}>
-                {session.user.name ?? "(No username)"}
+                {session.user.name ?? t("no_username")}
                 <Link href="/account/edit">
                   <Icon boxSize={5} as={Pencil} size="1em" />
                 </Link>
               </Flex>
               <Text as="b">Email</Text>
-              <Text>{session.user.email ?? "(No Email)"}</Text>
+              <Text>{session.user.email ?? t("no_email")}</Text>
             </Grid>
           </SurveyCard>
           <SurveyCard>
             <Title>{t("your_stats")}</Title>
             {[
-              LeaderboardTimeFrame.total,
               LeaderboardTimeFrame.day,
               LeaderboardTimeFrame.week,
               LeaderboardTimeFrame.month,
-            ].map((key) => {
-              const values = data[key];
-              if (!values) {
-                return null;
-              }
-              return (
+              LeaderboardTimeFrame.total,
+            ]
+              .map((key) => ({ key, values: entries[key] }))
+              .filter(({ values }) => values)
+              .map(({ key, values }) => (
                 <Box key={key} py={4}>
                   <Title>{t(getTypeSafei18nKey(key))}</Title>
                   <Flex w="full" wrap="wrap" alignItems="flex-start" gap={4}>
@@ -84,8 +86,7 @@ export default function Account() {
                     </TableColumn>
                   </Flex>
                 </Box>
-              );
-            })}
+              ))}
           </SurveyCard>
         </Flex>
       </main>

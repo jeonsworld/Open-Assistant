@@ -22,7 +22,7 @@ const sidebars = {
         type: "doc",
         id: "guides/README",
       },
-      items: ["guides/prompting"],
+      items: ["guides/guidelines", "guides/examples", "guides/developers"],
     },
     {
       type: "category",
@@ -36,6 +36,7 @@ const sidebars = {
         "tasks/label_prompter_reply",
         "tasks/reply_as_assistant",
         "tasks/reply_as_user",
+        "tasks/rank_assistant_replies",
       ],
     },
     {
@@ -71,13 +72,9 @@ const sidebars = {
       items: ["presentations/list"],
     },
     {
-      type: "category",
+      type: "doc",
       label: "FAQ",
-      link: {
-        type: "doc",
-        id: "faq/README",
-      },
-      items: ["faq/faq"],
+      id: "faq",
     },
   ],
 };
